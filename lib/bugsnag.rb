@@ -158,10 +158,12 @@ module Bugsnag
   end
 end
 
-require "bugsnag/integrations/railtie" if defined?(Rails::Railtie)
-[:resque, :sidekiq, :mailman, :delayed_job, :shoryuken, :que].each do |integration|
-  begin
-    require "bugsnag/integrations/#{integration}"
-  rescue LoadError
+
+if ENV['BUGSNAG_AUTO_NOTIFY']
+  [:resque, :sidekiq, :mailman, :delayed_job, :shoryuken, :que].each do |integration|
+    begin
+      require "bugsnag/integrations/#{integration}"
+    rescue LoadError
+    end
   end
 end
